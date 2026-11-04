@@ -1,24 +1,14 @@
 # You can create any variables here to store state within a run (but not between runs)
+import numpy as np
 history = []
+turns_left = 125
 
 def play(reward: float, lockout: int, t: int, T: int, your_score: float, other_scores: list[tuple[float, bool]], is_locked: bool) -> bool:
-	"""
-	Return True to accept the reward, False to skip.
 
-	Called every round (including while locked out, so you can track history).
-	If you are locked out (is_locked == True), returning True has no effect.
+	k = 10 * np.log10(t + 1) + 10 * np.log10(T - t + 1) + 10 * np.log10(your_score + 1) + 10 * np.log10(sum(score for score, _ in other_scores) + 1)
 
-	Parameters:
-	    reward       - the reward offered this round (float)
-	    lockout      - rounds you will be locked out if you accept (int)
-	    t            - current round number, starting at 1 (int)
-	    T            - total number of rounds (int)
-	    your_score   - your cumulative score so far at round t-1 (float)
-	    other_scores - list of (score, is_locked) for other teams at round t-1 (list of tuples: [(float, bool), ...]). Empty [] on round 1.
-	    is_locked    - bool, whether you are currently locked out this round
-
-	Returns:
-	    bool - True to accept, False to skip
-	"""
-	history.append(reward)
-	return True
+	if reward >= k and not is_locked and turns_left > 0: 
+		return True
+		turns_left -= 1 
+	else: 
+		return False
